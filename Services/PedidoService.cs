@@ -24,7 +24,7 @@ namespace IfoodParaguai.Services
             _pedidoCollection = database.GetCollection<Pedido>(collectionName);
         }
 
-        public async Task<List<PedidoRetornoClean>> GetAllAsync()
+        public async Task<List<PedidoRetorno>> GetAllAsync()
         {
             // Define o estágio de lookup para a coleção "Lojas"
             var lookupLojas = new BsonDocument
@@ -74,21 +74,21 @@ namespace IfoodParaguai.Services
 
             // Deserializa os resultados para o tipo Pedido
             var pedidos = result.Select(doc => BsonSerializer.Deserialize<PedidoRetorno>(doc)).ToList();
-            foreach (var pedido in pedidos)
-            {
-                PedidoRetornoClean item = new PedidoRetornoClean()
-                {
+            //foreach (var pedido in pedidos)
+            //{
+            //    PedidoRetornoClean item = new PedidoRetornoClean()
+            //    {
 
-                    id = pedido.id,
-                    cliente = pedido.cliente,
-                    produto = pedido.produto,
-                    loja = pedido.loja,
-                    em_transito = pedido.em_transito,
-                    status = pedido.status
-                };
-                resultFilrado.Add(item);
-            }
-            return resultFilrado;
+            //        id = pedido.id,
+            //        cliente = pedido.cliente,
+            //        produto = pedido.produto,
+            //        loja = pedido.loja,
+            //        em_transito = pedido.em_transito,
+            //        status = pedido.status
+            //    };
+            //    resultFilrado.Add(item);
+            //}
+            return pedidos;
         }
 
 
