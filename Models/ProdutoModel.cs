@@ -7,11 +7,11 @@ public class Produto
 {
     [BsonId]
     [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
-    public string? id { get; set; }
+    public string? Id { get; set; }
     public string? nome { get; set; }
-    public decimal preco { get; set; }
+    public decimal? preco { get; set; }
     public Produto()
     {
-        id = null;
+        Id = null;
     }
 }
