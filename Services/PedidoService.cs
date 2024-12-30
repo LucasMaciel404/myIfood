@@ -1,9 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using IfoodParaguai.Models;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
-using System.Text.Json;
+using MongoDB.Bson.Serialization.IdGenerators;
 
 namespace IfoodParaguai.Services
 {
@@ -24,7 +23,7 @@ namespace IfoodParaguai.Services
             _pedidoCollection = database.GetCollection<Pedido>(collectionName);
         }
 
-        public async Task<List<PedidoRetorno>> GetAllAsync()
+        public async Task<List<Pedido>> GetAllAsync()
         {
             // Define o estágio de lookup para a coleção "Lojas"
             var lookupLojas = new BsonDocument
@@ -70,47 +69,42 @@ namespace IfoodParaguai.Services
 
             // Executa a agregação
             var result = await _pedidoCollection.Aggregate<BsonDocument>(pipeline).ToListAsync();
-            List<PedidoRetornoClean> resultFilrado; 
 
             // Deserializa os resultados para o tipo Pedido
-            var pedidos = result.Select(doc => BsonSerializer.Deserialize<PedidoRetorno>(doc)).ToList();
-            //foreach (var pedido in pedidos)
-            //{
-            //    PedidoRetornoClean item = new PedidoRetornoClean()
-            //    {
+            var pedidos = result.Select(doc => BsonSerializer.Deserialize<Pedido>(doc)).ToList();
 
-            //        id = pedido.id,
-            //        cliente = pedido.cliente,
-            //        produto = pedido.produto,
-            //        loja = pedido.loja,
-            //        em_transito = pedido.em_transito,
-            //        status = pedido.status
-            //    };
-            //    resultFilrado.Add(item);
-            //}
             return pedidos;
         }
 
 
         public async Task<Pedido?> GetByIdAsync(string id)
         {
-            return await _pedidoCollection.Find(p => p.id == id).FirstOrDefaultAsync();
+            return await _pedidoCollection.Find(p => p.id_simples == id).FirstOrDefaultAsync();
         }
 
-        public async Task CreateAsync(Pedido pedido)
+        public async Task CreateAsync(PedidoRequisicao pedido)
         {
-            await _pedidoCollection.InsertOneAsync(pedido);
+            var montandoPedido = new Pedido
+            {
+                id = ObjectId.GenerateNewId(),
+                produto_id = ObjectId.Parse(pedido.produto_id),
+                cliente_id = ObjectId.Parse(pedido.cliente_id),
+                loja_id = ObjectId.Parse(pedido.loja_id),
+                em_transito = pedido.em_transito,
+                status = pedido.status
+            };
+            await _pedidoCollection.InsertOneAsync(montandoPedido);
         }
 
         public async Task<bool> UpdateAsync(string id, Pedido updatedPedido)
         {
-            var result = await _pedidoCollection.ReplaceOneAsync(p => p.id == id, updatedPedido);
+            var result = await _pedidoCollection.ReplaceOneAsync(p => p.id_simples == id, updatedPedido);
             return result.ModifiedCount > 0;
         }
 
         public async Task<bool> DeleteAsync(string id)
         {
-            var result = await _pedidoCollection.DeleteOneAsync(p => p.id == id);
+            var result = await _pedidoCollection.DeleteOneAsync(p => p.id_simples == id);
             return result.DeletedCount > 0;
         }
     }

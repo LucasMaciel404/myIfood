@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace IfoodParaguai.Models;
@@ -8,39 +7,45 @@ public class Pedido
 {
     [BsonId]
     [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
-    public string? id { get; set; }
+    public ObjectId? id { get; set; }
+    public string? id_simples { get; set; }
+    [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
+    public ObjectId? loja_id { get; set; }
+    [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
+    public ObjectId? cliente_id { get; set; }
+    [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
+    public ObjectId? produto_id { get; set; }
+    public bool? em_transito { get; set; }
+    public bool? status { get; set; }
+    public string[]? loja { get; set; }
+    public string[]? cliente { get; set; }
+    public string[]? produto { get; set; }
+    public Pedido()
+    {
+        Random numAleatorio = new Random();
+        int valorInteiro = numAleatorio.Next(1, 100);
+        int segundos = DateTime.Now.Second;
+        int media = (valorInteiro * segundos) / 2;
+        id_simples = $"{media}";
+        loja = null;
+        cliente = null;
+        produto = null;
+    }
+}
+public class PedidoRequisicao
+{
+    public string? id_simples { get; set; }
     public string? loja_id { get; set; }
     public string? cliente_id { get; set; }
     public string? produto_id { get; set; }
     public bool? em_transito { get; set; }
     public bool? status { get; set; }
-    public Pedido()
+    public PedidoRequisicao()
     {
-        id = null;
+        Random numAleatorio = new Random();
+        int valorInteiro = numAleatorio.Next(1, 100);
+        int segundos = DateTime.Now.Second;
+        int media = (valorInteiro * segundos) / 2;
+        id_simples = $"{media}";
     }
-}
-public class PedidoRetorno
-{
-    [BsonId]
-    [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
-    public ObjectId? id { get; set; }
-    public ObjectId? loja_id { get; set; }
-    public ObjectId? cliente_id { get; set; }
-    public ObjectId? produto_id { get; set; }
-    public bool? em_transito { get; set; }
-    public bool? status { get; set; }
-    public object[] loja { get; set; }
-    public object[] produto { get; set; }
-    public object[] cliente { get; set; }
-}
-public class PedidoRetornoClean
-{
-    [BsonId]
-    [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
-    public ObjectId? id { get; set; }
-    public object[] cliente { get; set; }
-    public object[] produto { get; set; }
-    public object[] loja { get; set; }
-    public bool? em_transito { get; set; }
-    public bool? status { get; set; }
 }

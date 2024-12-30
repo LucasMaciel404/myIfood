@@ -1,5 +1,6 @@
 ﻿using IfoodParaguai.Models;
 using IfoodParaguai.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IfoodParaguai.Controllers;
@@ -28,7 +29,7 @@ public class ProdutoController : Controller
 
         return Ok(produto);
     }
-
+    [Authorize]
     [HttpPost]
     public async Task<ActionResult> Post(Produto produto)
     {
