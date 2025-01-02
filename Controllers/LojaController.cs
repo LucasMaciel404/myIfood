@@ -1,5 +1,6 @@
 ﻿using IfoodParaguai.Models;
 using IfoodParaguai.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IfoodParaguai.Controllers;
@@ -29,7 +30,7 @@ public class LojaController : Controller
 
         return loja;
     }
-
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> Post(Loja newLoja)
     {
@@ -37,7 +38,7 @@ public class LojaController : Controller
 
         return CreatedAtAction(nameof(Get), new { id = newLoja.Id }, newLoja);
     }
-
+    [Authorize]
     [HttpPut("{id:length(24)}")]
     public async Task<IActionResult> Update(string id, Loja updatedLoja)
     {
@@ -54,7 +55,7 @@ public class LojaController : Controller
 
         return NoContent();
     }
-
+    [Authorize]
     [HttpDelete("{id:length(24)}")]
     public async Task<IActionResult> Delete(string id)
     {

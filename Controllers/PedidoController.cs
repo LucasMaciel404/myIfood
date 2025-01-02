@@ -3,6 +3,7 @@ using IfoodParaguai.Models;
 using IfoodParaguai.Services;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Bson;
+using Microsoft.AspNetCore.Authorization;
 
 namespace IfoodParaguai.Controllers
 {
@@ -43,7 +44,7 @@ namespace IfoodParaguai.Controllers
 
             return Ok(pedido);
         }
-
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create(PedidoRequisicao pedido)
         {
@@ -57,7 +58,7 @@ namespace IfoodParaguai.Controllers
             }
             return Ok(pedido);
         }
-
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(string id, Pedido updatedPedido)
         {
@@ -67,7 +68,7 @@ namespace IfoodParaguai.Controllers
 
             return NoContent();
         }
-
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {

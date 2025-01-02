@@ -36,7 +36,7 @@ public class ProdutoController : Controller
         await _produtoService.CreateAsync(produto);
         return CreatedAtAction(nameof(Get), new { id = produto.Id }, produto);
     }
-
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(string id, Produto produto)
     {
@@ -51,7 +51,7 @@ public class ProdutoController : Controller
 
         return NoContent();
     }
-
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(string id)
     {

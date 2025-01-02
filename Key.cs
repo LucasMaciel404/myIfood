@@ -1,4 +1,4 @@
-﻿namespace IfoodParaguai
+﻿namespace IfoodParaguai.KeySecret
 {
     public class Key
     {

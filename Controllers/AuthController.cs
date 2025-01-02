@@ -6,12 +6,16 @@ namespace IfoodParaguai.Controllers;
 [Route("/v1/[controller]")]
 public class AuthController : Controller
 {
+    private readonly UserService _userService;
+    public AuthController(UserService userService) => _userService = userService;
+    
     [HttpPost]
-    public IActionResult Auth(string username, string password)
+    public async Task<IActionResult> Auth(string email, string password)
     {
-        if (username == "lucas" && password == "12345")
+        var usuario = await _userService.Verify(email, password);
+        if (usuario != null)
         {
-            var token = TokenService.GenereteToken(new Models.Usuario() { Id = "123456"});
+            var token = TokenService.GenerateToken(usuario);
             return Ok(token);
         }
 
