@@ -13,7 +13,6 @@ public class ProdutoController : Controller
     public ProdutoController(ProdutoService produtoService) =>
         _produtoService = produtoService;
 
-
     [HttpGet]
     public async Task<List<Produto>> Get() => await _produtoService.GetAsync();
 
@@ -31,10 +30,10 @@ public class ProdutoController : Controller
     }
 
     [HttpPost]
-    public async Task<ActionResult<Produto>> Post(Produto produto)
+    public async Task<ActionResult> Post(Produto produto)
     {
         await _produtoService.CreateAsync(produto);
-        return CreatedAtAction("Get", new { id = produto.id }, produto);
+        return CreatedAtAction(nameof(Get), new { id = produto.Id }, produto);
     }
 
     [HttpPut("{id}")]
@@ -46,7 +45,7 @@ public class ProdutoController : Controller
             return NotFound();
         }
 
-        produto.id = existingProduto.id;
+        produto.Id = existingProduto.Id;
         await _produtoService.UpdateAsync(id, produto);
 
         return NoContent();
