@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using IfoodParaguai.Models;
 using IfoodParaguai.Services;
+using MongoDB.Bson.Serialization.Serializers;
+using MongoDB.Bson;
+using Microsoft.AspNetCore.Authorization;
 
 namespace IfoodParaguai.Controllers
 {
@@ -20,7 +23,16 @@ namespace IfoodParaguai.Controllers
         public async Task<IActionResult> Get()
         {
             var pedidos = await _pedidoService.GetAllAsync();
-            return Ok(pedidos);
+            var algunsPedidos = pedidos.Select(p => new
+            {
+                id = p.id_simples,
+                loja = p.loja,
+                cliente = p.cliente,
+                produto = p.produto,
+                status = p.status,
+                em_transito = p.em_transito
+            });
+            return Ok(algunsPedidos);
         }
 
         [HttpGet("{id}")]
@@ -32,14 +44,21 @@ namespace IfoodParaguai.Controllers
 
             return Ok(pedido);
         }
-
+        [Authorize]
         [HttpPost]
-        public async Task<IActionResult> Create(Pedido pedido)
+        public async Task<IActionResult> Create(PedidoRequisicao pedido)
         {
-            await _pedidoService.CreateAsync(pedido);
-            return CreatedAtAction(nameof(GetById), new { id = pedido.id }, pedido);
+            try
+            {
+                await _pedidoService.CreateAsync(pedido);
+            }
+            catch ( Exception e)
+            {
+                Console.WriteLine($"[ERROR]: {e.Message}");
+            }
+            return Ok(pedido);
         }
-
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(string id, Pedido updatedPedido)
         {
@@ -49,7 +68,7 @@ namespace IfoodParaguai.Controllers
 
             return NoContent();
         }
-
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {

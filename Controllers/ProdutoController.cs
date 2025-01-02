@@ -1,5 +1,6 @@
 ﻿using IfoodParaguai.Models;
 using IfoodParaguai.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IfoodParaguai.Controllers;
@@ -28,14 +29,14 @@ public class ProdutoController : Controller
 
         return Ok(produto);
     }
-
+    [Authorize]
     [HttpPost]
     public async Task<ActionResult> Post(Produto produto)
     {
         await _produtoService.CreateAsync(produto);
         return CreatedAtAction(nameof(Get), new { id = produto.Id }, produto);
     }
-
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> Put(string id, Produto produto)
     {
@@ -50,7 +51,7 @@ public class ProdutoController : Controller
 
         return NoContent();
     }
-
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(string id)
     {

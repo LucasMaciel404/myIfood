@@ -1,7 +1,9 @@
+using IfoodParaguai;
 using IfoodParaguai.Models;
 using IfoodParaguai.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+var TokenService = new TokenService();
 
 //Configuração do data settings referente aos Models
 builder.Services.Configure<UserDataSettings>(builder.Configuration.GetSection("UserStoreDatabase"));
@@ -17,7 +19,9 @@ builder.Services.AddSingleton<PedidoService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c => TokenService.ConfigureSwagguerJwtAthentication(c));
+
+TokenService.ConfigureJWT(builder);
 
 var app = builder.Build();
 
@@ -29,8 +33,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
